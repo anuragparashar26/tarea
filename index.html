@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Tarea – Organize Smarter</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="description" content="Tarea – Seamless fusion of notes and tasks to supercharge your productivity." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  font-family:"Inter",system-ui,Arial,sans-serif;
+}
+
+* { box-sizing:border-box; }
+
+html,body { height:100%; }
+
+body {
+  margin:0;
+  background:#0f1012;
+  color:#e6e6e6;
+  font-weight:400;
+  -webkit-font-smoothing:antialiased;
+}
+
+h1,h2,h3 { margin:0; line-height:1.1; font-weight:800; letter-spacing:-0.02em;}
+
+p { line-height:1.55; }
+
+a { color:#7a828c; text-decoration:none; }
+a:hover { color:#ffffff; }
+
+button {
+  font:inherit;
+  cursor:pointer;
+  border:none;
+}
+
+.hero {
+  min-height:100dvh;
+  display:flex;
+  flex-direction:column;
+  align-items:stretch;
+  justify-content:flex-start;
+  text-align:left;
+  padding:4.5rem 2rem 5rem;
+  position:relative;
+  overflow:hidden;
+}
+
+.page {
+  width:100%;
+  max-width:880px;
+  margin:0 auto;
+}
+
+.badge {
+  display:inline-flex;
+  align-items:center;
+  gap:.9ch;
+  padding:.45rem .85rem;
+  background:#1c1f24;
+  border:1px solid #2a2d33;
+  border-radius:999px;
+  font-size:.75rem;
+  font-weight:500;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:#c8cdd3;
+  position:relative;
+}
+
+.badge::before {
+  content:"";
+  width:8px;height:8px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#3b82f6,#6366f1);
+  box-shadow:0 0 0 0 transparent;
+}
+
+.title {
+  max-width:920px;
+  font-size:clamp(2.2rem,5.2vw,3.4rem);
+  color:#ffffff !important;
+  margin:1.2rem 0 .9rem;
+  font-weight:700;
+}
+
+.subtitle {
+  max-width:720px;
+  margin:0 0 2rem;
+  font-size:clamp(1.05rem,1.4vw,1.25rem);
+  color:#a3aab4;
+  font-weight:400;
+}
+
+.cta-row {
+  display:flex;
+  flex-wrap:wrap;
+  gap:1rem;
+  align-items:center;
+  justify-content:flex-start;
+}
+
+.btn-primary {
+  position:relative;
+  padding:.85rem 1.4rem;
+  font-weight:500;
+  font-size:1rem;
+  background:linear-gradient(to bottom,#1d1f24,#121316);
+  color:#f5f7fa;
+  border:1px solid #2d3137;
+  border-radius:10px;
+  letter-spacing:0;
+  box-shadow:0 1px 2px rgba(0,0,0,.6),0 0 0 1px #1d2024;
+  transition:background .18s, transform .15s, box-shadow .25s;
+  overflow:hidden;
+}
+
+.btn-primary:hover {
+  background:#22262b;
+  transform:translateY(-2px);
+}
+
+.btn-primary:active { transform:translateY(0); }
+
+.btn-primary:focus-visible {
+  outline:none;
+  box-shadow:0 0 0 2px #6366f199,0 0 0 1px #343840;
+}
+
+.btn-ghost {
+  padding:.8rem 1.2rem;
+  background:#1c1f24;
+  color:#e6e9ed;
+  border:1px solid #2a2e34;
+  border-radius:10px;
+  font-weight:500;
+  transition:background .18s, border-color .18s;
+}
+
+.btn-ghost:hover { background:#23272d; }
+
+.btn-ghost:focus-visible {
+  outline:none;
+  box-shadow:0 0 0 2px #6366f155;
+}
+
+.metrics {
+  margin-top:2.75rem;
+  display:flex;
+  flex-wrap:wrap;
+  gap:3.5rem;
+  justify-content:flex-start;
+  font-size:.8rem;
+  color:#8b929b;
+  border-top:1px solid #24272d;
+  padding-top:1.4rem;
+}
+
+.metric-item strong {
+  display:block;
+  font-size:.95rem;
+  color:#f0f2f5;
+  font-weight:600;
+}
+
+footer {
+  position:static;
+  margin-top:4rem;
+  padding:2.5rem 0 3rem;
+  font-size:.65rem;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:#5d636c;
+  display:flex;
+  justify-content:flex-start;
+  gap:2rem;
+}
+
+.dialog-backdrop {
+  position:fixed;
+  inset:0;
+  display:none;
+  place-items:center;
+  background:rgba(0,0,0,.55);
+  backdrop-filter:blur(6px);
+  z-index:50;
+  padding:1.5rem;
+  animation:fadeIn .4s ease;
+}
+
+@keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
+
+.modal {
+  width:100%;
+  max-width:460px;
+  background:#14171c;
+  border:1px solid #272b32;
+  border-radius:18px;
+  padding:2rem 1.9rem 2.2rem;
+  position:relative;
+  box-shadow:0 8px 28px -8px rgba(0,0,0,.7),0 2px 6px -2px rgba(0,0,0,.6);
+  animation:pop .55s cubic-bezier(.16,.84,.36,1);
+}
+
+@keyframes pop { 0% { transform:translateY(18px) scale(.96); opacity:0 } 100% { transform:translateY(0) scale(1); opacity:1 } }
+
+.close-btn {
+  position:absolute;
+  top:12px;right:12px;
+  width:40px;height:40px;
+  display:grid;place-items:center;
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.15);
+  color:#c7ccd8;
+  border-radius:14px;
+  cursor:pointer;
+  transition:.25s;
+}
+
+.close-btn:hover { background:rgba(255,255,255,0.14); color:#fff; }
+
+.close-btn:focus-visible {
+  outline:none;
+  box-shadow:0 0 0 2px #6366f155;
+}
+
+.modal h2 {
+  font-size:1.6rem;
+  font-weight:600;
+  margin:0 0 .55rem;
+  color:#ffffff;
+}
+
+.modal p { margin:0 0 1.5rem; color:#9aa2ac; font-size:.95rem; }
+
+.form-row {
+  display:flex;
+  gap:.7rem;
+  flex-wrap:wrap;
+}
+
+input[type=email] {
+  flex:1;
+  min-width:200px;
+  padding:.85rem .95rem;
+  border-radius:9px;
+  border:1px solid #2e353d;
+  background:#1c2025;
+  color:#e6ecef;
+  font:inherit;
+  font-size:.95rem;
+  transition:.25s;
+}
+
+input[type=email]::placeholder { color:#5e6873; }
+
+input[type=email]:focus {
+  outline:none;
+  border-color:#6366f1;
+  box-shadow:0 0 0 2px #6366f144;
+}
+
+.small {
+  margin-top:.9rem;
+  font-size:.7rem;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  color:#6e757e;
+}
+
+.success {
+  display:none;
+  text-align:center;
+  padding:1.5rem 0 .3rem;
+}
+
+.success h3 {
+  margin:.2rem 0 .6rem;
+  font-size:1.35rem;
+  font-weight:600;
+  color:#ffffff;
+}
+
+.error {
+  color:#f87171;
+  margin-top:.35rem;
+  font-size:.75rem;
+}
+
+@media (max-width:640px) {
+  .hero { padding:3.5rem 1.3rem 4rem; }
+  .metrics { gap:1.8rem; flex-direction:column; }
+  .title { font-size:clamp(2.2rem,10vw,3.2rem); }
+  .subtitle { font-size:1rem; }
+  .modal { padding:1.9rem 1.4rem 2.2rem; }
+}
+</style>
+</head>
+<body>
+  <main class="hero">
+    <div class="page">
+      <div class="badge" aria-label="Public Beta">Coming Soon!</div>
+      <h1 class="title">Tarea – Organize Smarter</h1>
+      <p class="subtitle">Capture thoughts & tasks, transform them into actions, and flow through your day with clarity.</p>
+      <div class="cta-row">
+        <button class="btn-primary" id="openWaitlist" aria-haspopup="dialog" aria-controls="waitlistDialog">Join Waitlist</button>
+      </div>
+      <div class="metrics" aria-hidden="true">
+        <div class="metric-item"><strong>Open Source</strong>Transparent and community-driven.</div>
+        <div class="metric-item"><strong>Local-First</strong>Your data stays on your device.</div>
+        <div class="metric-item"><strong>Secure</strong>End-to-end encrypted by default.</div>
+      </div>
+      <footer>
+        <span>&copy; <span id="year"></span> Tarea</span>
+        <a href="#" aria-label="Terms">Terms</a>
+        <a href="#" aria-label="Privacy">Privacy</a>
+        <a href="https://github.com/anuragparashar26/tarea/" target="_blank" aria-label="Contact">Github</a>
+      </footer>
+    </div>
+  </main>
+
+  <!-- Waitlist Modal -->
+  <div class="dialog-backdrop" id="waitlistDialog" role="dialog" aria-modal="true" aria-labelledby="dialogTitle" aria-hidden="true">
+    <div class="modal">
+      <button class="close-btn" id="closeDialog" aria-label="Close waitlist form">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+      <div class="form-wrapper" id="formWrapper">
+        <h2 id="dialogTitle">Join the Waitlist</h2>
+        <p>Be among the first to shape a calmer, smarter productivity experience. We will send a single invite when your spot is ready.</p>
+        <form id="waitlistForm" novalidate>
+          <div class="form-row">
+            <input type="email" name="email" id="email" placeholder="you@example.com" autocomplete="email" required aria-label="Email address" />
+            <button type="submit" class="btn-primary" style="flex:0 0 auto;">Notify Me</button>
+          </div>
+          <div class="small">No spam. Just one early-access invite.</div>
+          <div class="error" id="waitlistError" role="alert" style="display:none;"></div>
+        </form>
+      </div>
+      <div class="success" id="successMessage" role="status" aria-live="polite">
+        <h3>You're In.</h3>
+        <p style="color:#b9c2d7; max-width:320px; margin:0 auto 1.2rem;">We added your spot. Watch your inbox for your early access invite.</p>
+        <button class="btn-ghost" id="closeAfterSuccess">Close</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+const qs = sel => document.querySelector(sel);
+const dialog = qs('#waitlistDialog');
+const openBtn = qs('#openWaitlist');
+const closeBtn = qs('#closeDialog');
+const form = qs('#waitlistForm');
+const emailInput = qs('#email');
+const successBox = qs('#successMessage');
+const formWrapper = qs('#formWrapper');
+const closeAfterSuccess = qs('#closeAfterSuccess');
+const yearSpan = qs('#year');
+yearSpan.textContent = new Date().getFullYear();
+
+// --- Formspark Setup ---
+const FORMSPARK_ACTION_URL = 'https://submit-form.com/z7C5U92vZ';
+
+async function saveEmail(email) {
+  const res = await fetch(FORMSPARK_ACTION_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    },
+    body: JSON.stringify({
+      email: email,
+    }),
+  });
+
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.message || 'An error occurred. Please try again.');
+  }
+}
+
+function openDialog() {
+  dialog.style.display='grid';
+  dialog.setAttribute('aria-hidden','false');
+  setTimeout(()=> emailInput.focus(),50);
+  document.body.style.overflow='hidden';
+  trapFocus();
+}
+function closeDialog() {
+  dialog.style.display='none';
+  dialog.setAttribute('aria-hidden','true');
+  document.body.style.overflow='';
+  successBox.style.display='none';
+  formWrapper.style.display='';
+  form.reset();
+  openBtn.focus();
+}
+openBtn.addEventListener('click', openDialog);
+closeBtn.addEventListener('click', closeDialog);
+closeAfterSuccess.addEventListener('click', closeDialog);
+
+dialog.addEventListener('click', e=>{
+  if(e.target === dialog) closeDialog();
+});
+document.addEventListener('keydown', e=>{
+  if(e.key === 'Escape' && dialog.getAttribute('aria-hidden')==='false') closeDialog();
+});
+
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  const email = emailInput.value.trim();
+  const errEl = document.getElementById('waitlistError');
+  errEl.style.display='none';
+  errEl.textContent='';
+
+  if(!validateEmail(email)) {
+    emailInput.focus();
+    emailInput.style.borderColor='#ef4444';
+    setTimeout(()=> emailInput.style.borderColor='#2e353d',1600);
+    errEl.textContent='Please enter a valid email.';
+    errEl.style.display='block';
+    return;
+  }
+
+  const btn = form.querySelector('button[type=submit]');
+  btn.disabled = true;
+  btn.textContent = 'Saving...';
+
+  try {
+    await saveEmail(email);
+    formWrapper.style.display='none';
+    successBox.style.display='block';
+  } catch(err){
+    errEl.textContent = 'Could not save email. Please try again.';
+    errEl.style.display='block';
+    btn.disabled = false;
+    btn.textContent='Notify Me';
+  }
+});
+
+function validateEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v); }
+
+function trapFocus(){
+  const focusables = dialog.querySelectorAll('button,[href],input');
+  const first = focusables[0];
+  const last = focusables[focusables.length -1];
+  dialog.addEventListener('keydown', e=>{
+    if(e.key === 'Tab') {
+      if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+      else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+    }
+  });
+}
+</script>
+</body>
+</html>
