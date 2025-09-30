@@ -202,7 +202,7 @@ export default function ProfilePage() {
 
 	return (
 		<div className="min-h-screen bg-white dark:bg-black">
-			<div className="max-w-3xl mx-auto px-6 py-12">
+			<div className="w-full px-6 py-12">
 				<div className="mb-10">
 					<h1 className="text-3xl font-semibold tracking-tight mb-2">Profile</h1>
 					<p className="text-sm text-muted-foreground">

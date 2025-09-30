@@ -70,7 +70,7 @@ export default function HomePage() {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
       >
-        <div className="max-w-6xl mx-auto px-6 py-4">
+  <div className="w-full px-6 py-4">
           <div className="flex justify-between items-center">
             <motion.div
               className="flex items-center space-x-3"
@@ -114,7 +114,7 @@ export default function HomePage() {
 
       {/* Hero Section */}
       <section className="py-20 px-6">
-        <div className="max-w-4xl mx-auto text-center">
+        <div className="w-full text-center">
           <motion.div
             variants={containerVariants}
             initial="hidden"
@@ -129,7 +129,7 @@ export default function HomePage() {
               <span className="text-gray-500 dark:text-gray-400">Simplified.</span>
             </motion.h1>
             <motion.p
-              className="text-xl md:text-2xl text-gray-600 dark:text-gray-400 mb-12 max-w-2xl mx-auto text-balance"
+              className="text-xl md:text-2xl text-gray-600 dark:text-gray-400 mb-12 mx-auto text-balance"
               variants={itemVariants}
             >
               A minimal workspace for your notes and task management.
@@ -168,7 +168,7 @@ export default function HomePage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
           >
-            <div className="relative max-w-4xl mx-auto">
+            <div className="relative w-full">
               <motion.div
                 className="absolute inset-0 bg-gradient-to-r from-transparent via-black/5 to-transparent dark:via-white/5 rounded-xl"
                 initial={{ opacity: 0 }}

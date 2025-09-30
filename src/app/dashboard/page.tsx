@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useSession, signOut } from 'next-auth/react'
 import { redirect } from 'next/navigation'
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
+import { Tabs, TabsContent } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
@@ -29,7 +29,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-black">
+    <div className="min-h-screen bg-white dark:bg-black flex flex-col">
       {/* Header */}
       <motion.header 
         className="border-b border-gray-200 dark:border-gray-800"
@@ -37,7 +37,7 @@ export default function DashboardPage() {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
       >
-        <div className="max-w-7xl mx-auto px-6 py-4">
+  <div className="w-full px-6 py-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-3">
               <motion.div 
@@ -102,33 +102,41 @@ export default function DashboardPage() {
       </motion.header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-6 py-8">
+  <main className="w-full px-6 py-8 flex-1 min-h-0 relative overflow-hidden">
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.6, duration: 0.5 }}
         >
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-            <TabsList className="grid w-full max-w-md grid-cols-2 bg-gray-100 dark:bg-gray-900">
-              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                <TabsTrigger 
-                  value="notes" 
-                  className="flex items-center space-x-2 data-[state=active]:bg-white data-[state=active]:text-black dark:data-[state=active]:bg-black dark:data-[state=active]:text-white"
-                >
-                  <StickyNote className="h-4 w-4" />
-                  <span>Notes</span>
-                </TabsTrigger>
-              </motion.div>
-              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                <TabsTrigger 
-                  value="tasks" 
-                  className="flex items-center space-x-2 data-[state=active]:bg-white data-[state=active]:text-black dark:data-[state=active]:bg-black dark:data-[state=active]:text-white"
-                >
-                  <CheckSquare className="h-4 w-4" />
-                  <span>Tasks</span>
-                </TabsTrigger>
-              </motion.div>
-            </TabsList>
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full">
+
+            {/* Floating switcher buttons */}
+            <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3">
+              <button
+                aria-label="Show Notes"
+                onClick={() => setActiveTab('notes')}
+                className={`h-12 w-12 rounded-full shadow-md flex items-center justify-center transition-colors border ${
+                  activeTab === 'notes'
+                    ? 'bg-black text-white border-black dark:bg-white dark:text-black dark:border-white'
+                    : 'bg-white text-black border-gray-300 hover:bg-gray-100 dark:bg-gray-900 dark:text-white dark:border-gray-700 dark:hover:bg-gray-800'
+                }`}
+                title="Notes"
+              >
+                <StickyNote className="h-5 w-5" />
+              </button>
+              <button
+                aria-label="Show Tasks"
+                onClick={() => setActiveTab('tasks')}
+                className={`h-12 w-12 rounded-full shadow-md flex items-center justify-center transition-colors border ${
+                  activeTab === 'tasks'
+                    ? 'bg-black text-white border-black dark:bg-white dark:text-black dark:border-white'
+                    : 'bg-white text-black border-gray-300 hover:bg-gray-100 dark:bg-gray-900 dark:text-white dark:border-gray-700 dark:hover:bg-gray-800'
+                }`}
+                title="Tasks"
+              >
+                <CheckSquare className="h-5 w-5" />
+              </button>
+            </div>
 
             <AnimatePresence mode="wait">
               <TabsContent value="notes" key="notes">
@@ -138,11 +146,13 @@ export default function DashboardPage() {
                   exit={{ opacity: 0, x: 20 }}
                   transition={{ duration: 0.3, ease: "easeInOut" }}
                 >
-                  <NotesManager />
+                  <div className="mx-auto w-full max-w-5xl px-4 md:px-6">
+                    <NotesManager />
+                  </div>
                 </motion.div>
               </TabsContent>
 
-              <TabsContent value="tasks" key="tasks">
+              <TabsContent value="tasks" key="tasks" className="h-full">
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}

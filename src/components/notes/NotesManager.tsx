@@ -395,7 +395,7 @@ export default function NotesManager() {
 
       {/* Edit Note Modal */}
       <Dialog open={!!editingNote} onOpenChange={(open) => !open && handleCloseModal()}>
-        <DialogContent className="sm:max-w-[600px] max-h-[80vh] bg-white dark:bg-black border border-gray-200 dark:border-gray-800">
+        <DialogContent className="sm:max-w-[800px] max-h-[80vh] bg-white dark:bg-black border border-gray-200 dark:border-gray-800 w-[95vw]">
           <DialogHeader className="border-b border-gray-200 dark:border-gray-800 pb-4">
             <div className="flex items-center justify-between">
               <DialogTitle className="text-xl font-semibold text-black dark:text-white">

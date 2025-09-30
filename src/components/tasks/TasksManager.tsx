@@ -326,7 +326,7 @@ export default function TasksManager() {
   }
 
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-white dark:bg-gray-950">
+  <div className="flex h-full w-full overflow-hidden bg-white dark:bg-gray-950">
       {/* Mobile sidebar overlay */}
       {isSidebarOpen && (
         <div
@@ -442,7 +442,7 @@ export default function TasksManager() {
                     variants={sidebarItemVariants}
                     whileHover="hover"
                     whileTap="tap"
-                    className={`w-full text-left p-3 rounded-lg transition-colors ${
+                    className={`w-full text-left p-3 pr-10 rounded-lg transition-colors ${
                       selectedListId === list.id
                         ? 'bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900'
                         : 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300'
@@ -463,7 +463,9 @@ export default function TasksManager() {
                     variant="ghost"
                     size="sm"
                     onClick={() => handleDeleteTaskList(list.id, list.name)}
-                    className="absolute top-1 right-1 h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400"
+                    aria-label={`Delete list ${list.name}`}
+                    title="Delete list"
+                    className="absolute top-1 right-1 h-7 w-7 p-0 z-10 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-200 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400"
                   >
                     <Trash2 className="h-3 w-3" />
                   </Button>
@@ -491,10 +493,10 @@ export default function TasksManager() {
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+  {/* Main Content */}
+  <div className="flex-1 flex flex-col min-h-0">
         {/* Header */}
-        <div className="bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800 p-4">
+        <div className="sticky top-0 z-20 bg-white/80 dark:bg-gray-950/80 backdrop-blur supports-[backdrop-filter]:backdrop-blur border-b border-gray-200 dark:border-gray-800 p-4">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div className="flex items-center space-x-4">
               <Button
@@ -520,7 +522,7 @@ export default function TasksManager() {
                   placeholder="Search tasks..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 w-full sm:w-48 bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-800"
+                  className="pl-10 w-full sm:w-64 md:w-80 bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-800"
                 />
               </div>
               
@@ -558,8 +560,8 @@ export default function TasksManager() {
           </div>
         </div>
 
-        {/* Task Content */}
-        <div className="flex-1 overflow-y-auto p-6">
+  {/* Task Content */}
+  <div className="flex-1 p-6 pb-24 overflow-y-auto">
           {/* Task Display */}
           {(() => {
             // Filter tasks based on selected list
@@ -604,14 +606,14 @@ export default function TasksManager() {
                 variants={containerVariants}
                 initial="hidden"
                 animate="visible"
-                className="space-y-4"
+                className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"
               >
                 {filteredTasks.length === 0 ? (
                   <motion.div
                     variants={listItemVariants}
-                    className="flex flex-col items-center justify-center py-12 px-4"
+                    className="flex flex-col items-center justify-center py-12 px-4 min-h-[50vh]"
                   >
-                    <div className="text-center max-w-md">
+                    <div className="text-center max-w-md mx-auto">
                       {selectedListId === null && (
                         <>
                           <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
@@ -625,7 +627,7 @@ export default function TasksManager() {
                       )}
                       {selectedListId === 'myday' && (
                         <>
-                          <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
+                          <div className="w-20 h-20 mx-auto mb-5 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
                             <Sun className="w-8 h-8 text-gray-400" />
                           </div>
                           <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">Your day is clear</h3>
@@ -652,7 +654,7 @@ export default function TasksManager() {
                           </div>
                           <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">List is empty</h3>
                           <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">
-                            Add your first task to "{taskLists.find(l => l.id === selectedListId)?.name}".
+                            Add your first task to &quot;{taskLists.find(l => l.id === selectedListId)?.name}&quot;.
                           </p>
                           <Button
                             onClick={() => setIsCreateTaskOpen(true)}
@@ -671,7 +673,7 @@ export default function TasksManager() {
                   <motion.div
                     key={task.id}
                     variants={taskItemVariants}
-                    className={`group bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-4 hover:shadow-sm transition-all duration-200 ${
+                    className={`group bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-5 hover:shadow-md transition-all duration-200 ${
                       task.completed ? 'opacity-60' : ''
                     }`}
                   >
