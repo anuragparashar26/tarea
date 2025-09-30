@@ -78,7 +78,7 @@ export default function HomePage() {
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
               <Image
-                src="/logo.png"
+                src="/logo_32.png"
                 alt="Tarea Logo"
                 width={32}
                 height={32}
@@ -170,13 +170,13 @@ export default function HomePage() {
           >
             <div className="relative w-full">
               <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-black/5 to-transparent dark:via-white/5 rounded-xl"
+                className="absolute inset-0 from-transparent via-black/5 to-transparent dark:via-white/5 rounded-xl"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 1, delay: 0.8 }}
               ></motion.div>
               <motion.div
-                className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-8 shadow-sm"
+                className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-8 shadow-sm max-w-4xl mx-auto"
                 whileHover={{ y: -5 }}
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
               >
@@ -385,7 +385,7 @@ export default function HomePage() {
             transition={{ type: "spring", stiffness: 400, damping: 10 }}
           >
             <Image
-                src="/logo.png"
+                src="/logo_32.png"
                 alt="Tarea Logo"
                 width={28}
                 height={28}

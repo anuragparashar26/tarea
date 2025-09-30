@@ -17,9 +17,9 @@ export const metadata: Metadata = {
   title: "Tarea - Notes & Tasks",
   description: "A modern notes and task management application",
   icons: {
-    icon: [{ url: "/logo.png", type: "image/png", sizes: "32x32" }],
-    shortcut: "/logo.png",
-    apple: "/logo.png",
+    icon: [{ url: "/logo_32.png", type: "image/png", sizes: "32x32" }],
+    shortcut: "/logo_32.png",
+    apple: "/logo_32.png",
   },
 };
 

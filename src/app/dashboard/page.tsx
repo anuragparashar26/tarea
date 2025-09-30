@@ -46,7 +46,7 @@ export default function DashboardPage() {
                 transition={{ type: "spring", stiffness: 400, damping: 10 }}
               >
                 <Image
-                  src="/logo.png"
+                  src="/logo_32.png"
                   alt="Tarea Logo"
                   width={32}
                   height={32}
