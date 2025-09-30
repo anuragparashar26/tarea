@@ -2,7 +2,10 @@
 
 A minimal and elegant workspace for managing your notes and tasks. Built with Next.js, TypeScript, and modern web technologies.
 
-<img src="public/logowithtext.png" alt="Tarea Logo" width="200" height="auto">
+<br>
+<div align="center">
+  <img src="public/logowithtext.png" alt="Tarea Logo" width="200" height="200">
+</div>
 
 ## Features
 
