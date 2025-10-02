@@ -103,7 +103,7 @@ export default function SignUpPage() {
         <div className="max-w-6xl mx-auto px-6 py-4">
           <Link href="/" className="flex items-center space-x-3">
             <Image
-              src="/logo.png"
+              src="/logo_blackbgrounded.png"
               alt="Tarea Logo"
               width={32}
               height={32}

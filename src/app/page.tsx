@@ -78,7 +78,7 @@ export default function HomePage() {
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
               <Image
-                src="/logo_32.png"
+                src="/logo_blackbgrounded.png"
                 alt="Tarea Logo"
                 width={32}
                 height={32}
@@ -385,7 +385,7 @@ export default function HomePage() {
             transition={{ type: "spring", stiffness: 400, damping: 10 }}
           >
             <Image
-                src="/logo_32.png"
+                src="/logo_blackbgrounded.png"
                 alt="Tarea Logo"
                 width={28}
                 height={28}
