@@ -14,26 +14,11 @@ interface Note {
   id: string
   title: string
   content: string
-  color: string
   isPinned: boolean
   isArchived: boolean
   createdAt: string
   updatedAt: string
 }
-
-const COLORS = [
-  'bg-white dark:bg-black',
-  'bg-gray-50 dark:bg-gray-900',
-  'bg-gray-100 dark:bg-gray-800',
-  'bg-gray-200 dark:bg-gray-700'
-]
-
-const COLOR_NAMES = [
-  'Default',
-  'Light Gray',
-  'Medium Gray',
-  'Dark Gray'
-]
 
 // Animation variants
 const containerVariants = {
@@ -81,7 +66,7 @@ export default function NotesManager() {
   const [editingNote, setEditingNote] = useState<Note | null>(null)
   const [originalNote, setOriginalNote] = useState<Note | null>(null)
   const [isSaving, setIsSaving] = useState(false)
-  const [newNote, setNewNote] = useState({ title: '', content: '', color: 'bg-white dark:bg-black' })
+  const [newNote, setNewNote] = useState({ title: '', content: '' })
   const [showNewNote, setShowNewNote] = useState(false)
   const queryClient = useQueryClient()
   const titleInputRef = useRef<HTMLInputElement>(null)
@@ -101,7 +86,7 @@ export default function NotesManager() {
 
   // Create note mutation
   const createNoteMutation = useMutation({
-    mutationFn: async (noteData: { title: string; content: string; color: string }) => {
+    mutationFn: async (noteData: { title: string; content: string }) => {
       const response = await fetch('/api/notes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -114,7 +99,7 @@ export default function NotesManager() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notes'] })
-      setNewNote({ title: '', content: '', color: 'bg-white dark:bg-black' })
+      setNewNote({ title: '', content: '' })
       setShowNewNote(false)
       toast.success('Note created!')
     },
@@ -174,14 +159,12 @@ export default function NotesManager() {
   useEffect(() => {
     if (debouncedEditingNote && originalNote && (
       originalNote.title !== debouncedEditingNote.title ||
-      originalNote.content !== debouncedEditingNote.content ||
-      originalNote.color !== debouncedEditingNote.color
+      originalNote.content !== debouncedEditingNote.content
     )) {
       updateNoteMutation.mutate({
         id: debouncedEditingNote.id,
         title: debouncedEditingNote.title,
-        content: debouncedEditingNote.content,
-        color: debouncedEditingNote.color
+        content: debouncedEditingNote.content
       })
       setOriginalNote(debouncedEditingNote)
     }
@@ -265,30 +248,14 @@ export default function NotesManager() {
               className="border-none bg-transparent resize-none focus:ring-0 focus:outline-none p-0"
               rows={3}
             />
-            <div className="flex justify-between items-center pt-2">
-              <div className="flex items-center space-x-2">
-                <div className="flex space-x-1">
-                  {COLORS.map((color, index) => (
-                    <button
-                      key={color}
-                      onClick={() => setNewNote({ ...newNote, color })}
-                      className={`w-6 h-6 rounded-full border-2 ${color} ${
-                        newNote.color === color
-                          ? 'border-black dark:border-white'
-                          : 'border-gray-300 dark:border-gray-600'
-                      }`}
-                      title={COLOR_NAMES[index]}
-                    />
-                  ))}
-                </div>
-              </div>
+            <div className="flex justify-end items-center pt-2">
               <div className="flex space-x-2">
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => {
                     setShowNewNote(false)
-                    setNewNote({ title: '', content: '', color: 'bg-white dark:bg-black' })
+                    setNewNote({ title: '', content: '' })
                   }}
                   className="text-gray-600 dark:text-gray-400"
                 >
@@ -346,7 +313,7 @@ export default function NotesManager() {
             <motion.div
               key={note.id}
               variants={itemVariants}
-              className={`${note.color} border border-gray-200 dark:border-gray-700 rounded-lg transition-all duration-200 cursor-pointer relative group hover:shadow-md`}
+              className="bg-white dark:bg-black border border-gray-200 dark:border-gray-700 rounded-lg transition-all duration-200 cursor-pointer relative group hover:shadow-md"
               onClick={() => handleNoteClick(note)}
               whileHover={{ y: -2, scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -431,30 +398,6 @@ export default function NotesManager() {
                   placeholder="Start writing your note..."
                   className="border-none bg-transparent resize-none focus:ring-0 focus:outline-none p-0 min-h-[300px]"
                 />
-              </div>
-              
-              <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-800">
-                <div className="flex items-center space-x-4">
-                  <div>
-                    <span className="text-sm font-medium text-black dark:text-white mr-2">Color:</span>
-                    <div className="flex space-x-2">
-                      {COLORS.map((color, index) => (
-                        <button
-                          key={color}
-                          onClick={() => handleNoteChange('color', color)}
-                          className={`w-6 h-6 rounded-full border-2 ${color} ${
-                            editingNote.color === color
-                              ? 'border-black dark:border-white'
-                              : 'border-gray-300 dark:border-gray-600'
-                          }`}
-                          title={COLOR_NAMES[index]}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Removed footer close button - DialogContent has built-in close button */}
               </div>
               
               <div className="text-xs text-gray-500 dark:text-gray-400">

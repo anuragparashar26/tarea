@@ -292,7 +292,7 @@ export default function HomePage() {
               </motion.div>
               <h3 className="text-xl font-semibold mb-4">Smart Notes</h3>
               <p className="text-gray-600 dark:text-gray-400">
-                Create, organize, and search through your notes with colors and pinning.
+                Create, organize, and search through your notes with pinning and archiving.
               </p>
             </motion.div>
 
@@ -385,17 +385,26 @@ export default function HomePage() {
             transition={{ type: "spring", stiffness: 400, damping: 10 }}
           >
             <Image
-                src="/logo_blackbgrounded.png"
-                alt="Tarea Logo"
-                width={28}
-                height={28}
-                className="rounded-sm"
-              />
+              src="/logo_blackbgrounded.png"
+              alt="Tarea Logo"
+              width={28}
+              height={28}
+              className="rounded-sm"
+            />
             <span className="font-medium">Tarea</span>
           </motion.div>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            © 2025 Tarea. Built by Anurag Parashar.
-          </p>
+          <div className="flex items-center gap-4 text-sm">
+            <Link
+              href="/privacy-policy"
+              className="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors"
+            >
+              Privacy Policy
+            </Link>
+            <span className="text-gray-300 dark:text-gray-700">•</span>
+            <p className="text-gray-500 dark:text-gray-400">
+              © 2025 Tarea. Built by Anurag Parashar.
+            </p>
+          </div>
         </div>
       </motion.footer>
     </motion.div>

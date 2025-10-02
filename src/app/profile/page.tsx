@@ -15,7 +15,8 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '@/components/ui/dialog'
-import { Loader2, Mail, Save, Trash2, User as UserIcon, Calendar } from 'lucide-react'
+import { Loader2, Mail, Save, Trash2, User as UserIcon, Calendar, ArrowLeft, LogOut } from 'lucide-react'
+import Link from 'next/link'
 
 type ProfileFormState = {
 	name: string
@@ -201,21 +202,50 @@ export default function ProfilePage() {
 	}
 
 	return (
-		<div className="min-h-screen bg-white dark:bg-black">
-			<div className="w-full px-6 py-12">
-				<div className="mb-10">
-					<h1 className="text-3xl font-semibold tracking-tight mb-2">Profile</h1>
-					<p className="text-sm text-muted-foreground">
+		<div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col">
+			{/* Header */}
+			<header className="border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-black/40 backdrop-blur-sm sticky top-0 z-10">
+				<div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+					<div className="flex items-center gap-4">
+						<Button
+							variant="ghost"
+							size="sm"
+							onClick={() => router.push('/dashboard')}
+							className="flex items-center gap-2"
+						>
+							<ArrowLeft className="h-4 w-4" />
+							<span className="hidden sm:inline">Back to Dashboard</span>
+						</Button>
+						<div className="h-6 w-px bg-gray-200 dark:bg-gray-800 hidden sm:block" />
+						<h1 className="text-xl font-semibold">Profile Settings</h1>
+					</div>
+					<Button
+						variant="outline"
+						size="sm"
+						onClick={() => signOut({ callbackUrl: '/' })}
+						className="flex items-center gap-2"
+					>
+						<LogOut className="h-4 w-4" />
+						<span className="hidden sm:inline">Sign Out</span>
+					</Button>
+				</div>
+			</header>
+
+			{/* Main Content */}
+			<main className="flex-1 w-full max-w-5xl mx-auto px-6 py-8">
+				<div className="mb-8">
+					<h2 className="text-2xl font-bold mb-2 text-gray-900 dark:text-white">Account Settings</h2>
+					<p className="text-gray-600 dark:text-gray-400">
 						Manage your personal information and account preferences.
 					</p>
 				</div>
 
 				{isLoading ? (
 					<div className="flex h-40 items-center justify-center">
-						<Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+						<Loader2 className="h-6 w-6 animate-spin text-gray-400" />
 					</div>
 				) : (
-					<div className="space-y-10">
+					<div className="space-y-6">
 						<section className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-black/40 p-6 shadow-sm">
 							<header className="mb-6 flex items-center space-x-3">
 								<div className="rounded-md bg-primary/10 p-2 text-primary">
@@ -361,7 +391,33 @@ export default function ProfilePage() {
 						)}
 					</div>
 				)}
-			</div>
+			</main>
+
+			{/* Footer */}
+			<footer className="border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-black/40 mt-auto">
+				<div className="max-w-5xl mx-auto px-6 py-4">
+					<div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+						<p className="text-sm text-gray-500 dark:text-gray-400">
+							© {new Date().getFullYear()} Tarea. All rights reserved.
+						</p>
+						<div className="flex items-center gap-4 text-sm">
+							<Link
+								href="/privacy-policy"
+								className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
+							>
+								Privacy Policy
+							</Link>
+							<span className="text-gray-300 dark:text-gray-700">•</span>
+							<Link
+								href="/"
+								className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
+							>
+								Home
+							</Link>
+						</div>
+					</div>
+				</div>
+			</footer>
 		</div>
 	)
 }

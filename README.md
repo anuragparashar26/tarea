@@ -12,18 +12,17 @@ A minimal and elegant workspace for managing your notes and tasks. Built with Ne
 ### 📝 Notes Management
 
 - Create, edit, and organize notes with rich text content
-- Color-coded notes for easy categorization
 - Pin important notes to the top
 - Archive notes you don't need immediately
 - Drag and drop to reorder notes
 
 ### ✅ Task Management
 
-- Create tasks with descriptions, priorities, and due dates
+- Create tasks with descriptions and due dates
 - Organize tasks into custom lists
 - Set reminders for important deadlines
 - Mark tasks as "My Day" for daily focus
-- Priority levels: Low, Medium, High, Urgent
+- Mark tasks as important
 - Drag and drop to reorder tasks within lists
 
 ### 🔐 Authentication

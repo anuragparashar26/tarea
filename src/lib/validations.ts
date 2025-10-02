@@ -3,14 +3,12 @@ import { z } from 'zod'
 export const createNoteSchema = z.object({
   title: z.string().min(1, 'Title is required').max(255, 'Title too long'),
   content: z.string().min(0).max(10000, 'Content too long'),
-  color: z.string().optional().default('#ffffff'),
   isPinned: z.boolean().optional().default(false),
 })
 
 export const updateNoteSchema = z.object({
   title: z.string().min(1, 'Title is required').max(255, 'Title too long').optional(),
   content: z.string().min(0).max(10000, 'Content too long').optional(),
-  color: z.string().optional(),
   isPinned: z.boolean().optional(),
   isArchived: z.boolean().optional(),
   position: z.number().optional(),

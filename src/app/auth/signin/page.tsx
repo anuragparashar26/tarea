@@ -180,6 +180,32 @@ export default function SignInPage() {
           </div>
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-black mt-auto">
+        <div className="max-w-6xl mx-auto px-6 py-4">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              © {new Date().getFullYear()} Tarea. All rights reserved.
+            </p>
+            <div className="flex items-center gap-4 text-sm">
+              <Link
+                href="/privacy-policy"
+                className="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors"
+              >
+                Privacy Policy
+              </Link>
+              <span className="text-gray-300 dark:text-gray-700">•</span>
+              <Link
+                href="/"
+                className="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors"
+              >
+                Home
+              </Link>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }

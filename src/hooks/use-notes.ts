@@ -6,7 +6,6 @@ interface Note {
   id: string
   title: string
   content: string
-  color: string
   position: number
   isPinned: boolean
   isArchived: boolean
@@ -17,14 +16,12 @@ interface Note {
 interface CreateNoteData {
   title: string
   content: string
-  color?: string
   isPinned?: boolean
 }
 
 interface UpdateNoteData {
   title?: string
   content?: string
-  color?: string
   isPinned?: boolean
   isArchived?: boolean
 }

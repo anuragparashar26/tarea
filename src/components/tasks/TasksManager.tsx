@@ -19,9 +19,9 @@ interface Task {
   reminder?: string
   isMyDay: boolean
   isImportant: boolean
-  priority?: 'low' | 'medium' | 'high'
   createdAt: string
   updatedAt: string
+  taskListId?: string
   taskList?: {
     id: string
     name: string
@@ -122,7 +122,7 @@ export default function TasksManager() {
   const [selectedListId, setSelectedListId] = useState<string | 'myday' | 'important' | null>('myday')
   const [editingTask, setEditingTask] = useState<Task | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
-  const [filterBy, setFilterBy] = useState<'all' | 'pending' | 'completed' | 'high' | 'medium' | 'low'>('all')
+  const [filterBy, setFilterBy] = useState<'all' | 'pending' | 'completed'>('all')
   const [newTaskList, setNewTaskList] = useState({ name: '', description: '' })
   const [newTask, setNewTask] = useState<{
     title: string
@@ -130,14 +130,12 @@ export default function TasksManager() {
     dueDate: string
     isMyDay: boolean
     isImportant: boolean
-    priority: 'low' | 'medium' | 'high'
   }>({
     title: '',
     description: '',
     dueDate: '',
     isMyDay: false,
-    isImportant: false,
-    priority: 'medium'
+    isImportant: false
   })
   const queryClient = useQueryClient()
 
@@ -186,7 +184,6 @@ export default function TasksManager() {
       dueDate?: string
       isMyDay: boolean
       isImportant: boolean
-      priority: 'low' | 'medium' | 'high'
       taskListId: string
     }) => {
       const response = await fetch('/api/tasks', {
@@ -201,7 +198,7 @@ export default function TasksManager() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['taskLists'] })
-      setNewTask({ title: '', description: '', dueDate: '', isMyDay: false, isImportant: false, priority: 'medium' })
+      setNewTask({ title: '', description: '', dueDate: '', isMyDay: false, isImportant: false })
       setIsCreateTaskOpen(false)
       toast.success('Task created successfully!')
     },
@@ -296,7 +293,6 @@ export default function TasksManager() {
       dueDate: newTask.dueDate || undefined,
       isMyDay: newTask.isMyDay,
       isImportant: newTask.isImportant,
-      priority: newTask.priority,
       taskListId: selectedListId as string,
     })
   }
@@ -326,20 +322,20 @@ export default function TasksManager() {
   }
 
   return (
-  <div className="flex h-full w-full overflow-hidden bg-white dark:bg-gray-950">
+  <div className="flex h-screen w-full overflow-hidden bg-white dark:bg-gray-950">
       {/* Mobile sidebar overlay */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-20 z-40 lg:hidden"
+          className="fixed inset-0 bg-black bg-opacity-20 z-40 md:hidden"
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
 
       {/* Sidebar */}
-      <div className={`fixed lg:static inset-y-0 left-0 z-50 w-64 bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 transform transition-transform duration-300 ease-in-out ${
-        isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+      <div className={`fixed md:static inset-y-0 left-0 z-50 w-64 bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 transform transition-transform duration-300 ease-in-out ${
+        isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
       }`}>
-        <div className="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-800 lg:hidden">
+        <div className="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-800 md:hidden">
           <h3 className="font-medium text-gray-900 dark:text-white">Menu</h3>
           <Button
             variant="ghost"
@@ -465,9 +461,9 @@ export default function TasksManager() {
                     onClick={() => handleDeleteTaskList(list.id, list.name)}
                     aria-label={`Delete list ${list.name}`}
                     title="Delete list"
-                    className="absolute top-1 right-1 h-7 w-7 p-0 z-10 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-200 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400"
+                    className="absolute top-2 right-2 h-8 w-8 p-0 z-10 transition-opacity duration-200 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400"
                   >
-                    <Trash2 className="h-3 w-3" />
+                    <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
               ))}
@@ -494,15 +490,15 @@ export default function TasksManager() {
       </div>
 
   {/* Main Content */}
-  <div className="flex-1 flex flex-col min-h-0">
+  <div className="flex-1 flex flex-col min-h-0 relative">
         {/* Header */}
         <div className="sticky top-0 z-20 bg-white/80 dark:bg-gray-950/80 backdrop-blur supports-[backdrop-filter]:backdrop-blur border-b border-gray-200 dark:border-gray-800 p-4">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="flex items-center space-x-4">
               <Button
                 variant="ghost"
                 size="sm"
-                className="lg:hidden"
+                className="md:hidden"
                 onClick={() => setIsSidebarOpen(true)}
               >
                 <Menu className="h-4 w-4" />
@@ -535,9 +531,6 @@ export default function TasksManager() {
                   <option value="all">All</option>
                   <option value="pending">Pending</option>
                   <option value="completed">Completed</option>
-                  <option value="high">High Priority</option>
-                  <option value="medium">Medium Priority</option>
-                  <option value="low">Low Priority</option>
                 </select>
                 
                 {selectedListId && selectedListId !== 'myday' && selectedListId !== 'important' && (
@@ -590,14 +583,12 @@ export default function TasksManager() {
               )
             }
 
-            // Apply status/priority filter
+            // Apply status filter
             if (filterBy !== 'all') {
               if (filterBy === 'pending') {
                 filteredTasks = filteredTasks.filter(task => !task.completed)
               } else if (filterBy === 'completed') {
                 filteredTasks = filteredTasks.filter(task => task.completed)
-              } else if (filterBy === 'high' || filterBy === 'medium' || filterBy === 'low') {
-                filteredTasks = filteredTasks.filter(task => task.priority === filterBy)
               }
             }
 
@@ -670,28 +661,22 @@ export default function TasksManager() {
                   </motion.div>
                 ) : (
                   filteredTasks.map((task) => (
-                  <motion.div
+                  <div
                     key={task.id}
-                    variants={taskItemVariants}
-                    className={`group bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-5 hover:shadow-md transition-all duration-200 ${
+                    className={`group bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-4 hover:shadow-md transition-all duration-200 relative ${
                       task.completed ? 'opacity-60' : ''
                     }`}
                   >
-                    {/* Priority indicators */}
-                    <div className="flex justify-end mb-2">
-                      {task.priority === 'high' && (
-                        <div className="bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 text-xs px-2 py-1 rounded-md font-medium">
-                          High
-                        </div>
-                      )}
+                    {/* Badges */}
+                    <div className="flex flex-wrap gap-1 mb-3 min-h-[24px]">
                       {task.isImportant && (
-                        <div className="bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 text-xs px-2 py-1 rounded-md font-medium ml-1">
-                          Important
+                        <div className="bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 text-xs px-2 py-1 rounded-md font-medium">
+                          ⭐ Important
                         </div>
                       )}
-                      {task.isMyDay && !task.isImportant && (
+                      {task.isMyDay && (
                         <div className="bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 text-xs px-2 py-1 rounded-md font-medium">
-                          My Day
+                          📅 My Day
                         </div>
                       )}
                     </div>
@@ -699,11 +684,11 @@ export default function TasksManager() {
                     <div className="flex items-start gap-3">
                       <button
                         onClick={() => handleToggleComplete(task)}
-                        className="flex-shrink-0 mt-1 p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
+                        className="flex-shrink-0 mt-0.5 p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
                       >
                         {task.completed ? (
                           <div className="h-5 w-5 bg-gray-900 dark:bg-gray-100 rounded-full flex items-center justify-center">
-                            <Check className="h-3 w-3 text-white dark:text-gray-900" />
+                            <Check className="h-3.5 w-3.5 text-white dark:text-gray-900" />
                           </div>
                         ) : (
                           <div className="h-5 w-5 border-2 border-gray-300 dark:border-gray-600 rounded-full hover:border-gray-900 dark:hover:border-gray-100 transition-colors duration-200">
@@ -711,54 +696,58 @@ export default function TasksManager() {
                         )}
                       </button>
                       
-                      <div className="flex-1 min-w-0">
-                        <h3 className={`font-medium text-gray-900 dark:text-white mb-1 ${
+                      <div className="flex-1 min-w-0 pr-20">
+                        <h3 className={`font-medium text-gray-900 dark:text-white mb-1.5 break-words ${
                           task.completed ? 'line-through text-gray-500 dark:text-gray-400' : ''
                         }`}>
                           {task.title}
                         </h3>
                         
                         {task.description && (
-                          <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">
+                          <p className="text-gray-600 dark:text-gray-400 text-sm mb-2.5 break-words">
                             {task.description}
                           </p>
                         )}
                         
-                        <div className="flex items-center gap-3 text-xs">
+                        <div className="flex flex-wrap items-center gap-3 text-xs">
                           {task.dueDate && (
-                            <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400">
-                              <Calendar className="h-3 w-3" />
+                            <div className="flex items-center gap-1.5 text-gray-500 dark:text-gray-400">
+                              <Calendar className="h-3.5 w-3.5 flex-shrink-0" />
                               <span>{new Date(task.dueDate).toLocaleDateString()}</span>
                             </div>
                           )}
                           
-                          <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400">
-                            <CheckSquare className="h-3 w-3" />
-                            <span>{task.taskList?.name || 'Unknown List'}</span>
-                          </div>
+                          {task.taskList && (
+                            <div className="flex items-center gap-1.5 text-gray-500 dark:text-gray-400">
+                              <CheckSquare className="h-3.5 w-3.5 flex-shrink-0" />
+                              <span className="truncate">{task.taskList.name}</span>
+                            </div>
+                          )}
                         </div>
                       </div>
                       
-                      <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                      <div className="absolute top-4 right-4 flex gap-1.5 transition-opacity duration-200">
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => setEditingTask(task)}
-                          className="h-8 w-8 p-0 hover:bg-gray-100 dark:hover:bg-gray-800"
+                          className="h-9 w-9 p-0 hover:bg-gray-100 dark:hover:bg-gray-800"
+                          title="Edit task"
                         >
-                          <Edit className="h-4 w-4" />
+                          <Edit className="h-5 w-5" />
                         </Button>
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => handleDeleteTask(task.id)}
-                          className="h-8 w-8 p-0 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400"
+                          className="h-9 w-9 p-0 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400"
+                          title="Delete task"
                         >
-                          <Trash2 className="h-4 w-4" />
+                          <Trash2 className="h-5 w-5" />
                         </Button>
                       </div>
                     </div>
-                  </motion.div>
+                  </div>
                 ))
                 )}
               </motion.div>
@@ -855,20 +844,6 @@ export default function TasksManager() {
                     className="mt-1"
                   />
                 </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Priority
-                  </label>
-                  <select
-                    value={newTask.priority}
-                    onChange={(e) => setNewTask({ ...newTask, priority: e.target.value as 'low' | 'medium' | 'high' })}
-                    className="mt-1 w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  >
-                    <option value="low">🟢 Low Priority</option>
-                    <option value="medium">🟡 Medium Priority</option>
-                    <option value="high">🔴 High Priority</option>
-                  </select>
-                </div>
                 <div className="flex gap-4">
                   <label className="flex items-center space-x-2">
                     <input
@@ -948,20 +923,6 @@ export default function TasksManager() {
                       className="mt-1"
                     />
                   </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      Priority
-                    </label>
-                    <select
-                      value={editingTask.priority || 'medium'}
-                      onChange={(e) => setEditingTask({ ...editingTask, priority: e.target.value as 'low' | 'medium' | 'high' })}
-                      className="mt-1 w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    >
-                      <option value="low">🟢 Low Priority</option>
-                      <option value="medium">🟡 Medium Priority</option>
-                      <option value="high">🔴 High Priority</option>
-                    </select>
-                  </div>
                   <div className="flex gap-4">
                     <label className="flex items-center space-x-2">
                       <input
@@ -997,8 +958,7 @@ export default function TasksManager() {
                         description: editingTask.description,
                         dueDate: editingTask.dueDate,
                         isMyDay: editingTask.isMyDay,
-                        isImportant: editingTask.isImportant,
-                        priority: editingTask.priority
+                        isImportant: editingTask.isImportant
                       })}
                       disabled={updateTaskMutation.isPending}
                     >

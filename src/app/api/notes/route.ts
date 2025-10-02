@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { title, content, color, isPinned } = createNoteSchema.parse(body)
+    const { title, content, isPinned } = createNoteSchema.parse(body)
 
     const lastNote = await prisma.note.findFirst({
       where: { userId: session.user.id },
@@ -63,7 +63,6 @@ export async function POST(request: NextRequest) {
       data: {
         title,
         content,
-        color,
         isPinned,
         position,
         userId: session.user.id,

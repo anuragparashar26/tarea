@@ -74,7 +74,7 @@ model Note {
   id          String   @id @default(cuid())
   title       String
   content     String   @db.Text
-  color       String   @default("#ffffff")
+  color       String?  @default("#ffffff")
   position    Int      @default(0)
   isPinned    Boolean  @default(false)
   isArchived  Boolean  @default(false)
