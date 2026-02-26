@@ -3,6 +3,8 @@ import crypto from 'crypto'
 import { prisma } from '@/lib/prisma'
 import { sendPasswordResetEmail } from '@/lib/email'
 
+export const preferredRegion = 'bom1'
+
 export async function POST(request: NextRequest) {
   try {
     const { email } = await request.json()
@@ -27,7 +29,7 @@ export async function POST(request: NextRequest) {
       data: { token, userId: user.id, expires }
     })
 
-    sendPasswordResetEmail(email, token).catch(err =>
+    await sendPasswordResetEmail(email, token).catch(err =>
       console.error('Failed to send password reset email:', err)
     )
 

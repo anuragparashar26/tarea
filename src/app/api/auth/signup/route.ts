@@ -5,6 +5,8 @@ import crypto from 'crypto'
 import { prisma } from '@/lib/prisma'
 import { sendVerificationEmail } from '@/lib/email'
 
+export const preferredRegion = 'bom1'
+
 const signupSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Invalid email address'),
@@ -43,7 +45,7 @@ export async function POST(request: NextRequest) {
       data: { identifier: email, token, expires }
     })
 
-    sendVerificationEmail(email, token).catch(err =>
+    await sendVerificationEmail(email, token).catch(err =>
       console.error('Failed to send verification email:', err)
     )
 
