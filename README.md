@@ -84,6 +84,11 @@ NEXTAUTH_SECRET="your-secret-key-here"
 # OAuth Providers (optional)
 GOOGLE_CLIENT_ID=""
 GOOGLE_CLIENT_SECRET=""
+
+#Mailgun API
+MAILGUN_API_KEY=""
+MAILGUN_DOMAIN=""
+EMAIL_FROM=""
 ```
 
 4. Set up the database:

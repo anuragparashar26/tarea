@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { signIn, getSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
@@ -14,12 +14,24 @@ export default function SignInPage() {
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
+  const [info, setInfo] = useState('')
   const router = useRouter()
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    if (searchParams.get('verified') === '1') {
+      setInfo('Email verified! You can now sign in.')
+    }
+    const urlError = searchParams.get('error')
+    if (urlError === 'expired-token') setError('Verification link has expired. Please sign up again.')
+    if (urlError === 'invalid-token') setError('Invalid verification link.')
+  }, [searchParams])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
     setError('')
+    setInfo('')
 
     try {
       const result = await signIn('credentials', {
@@ -29,14 +41,20 @@ export default function SignInPage() {
       })
 
       if (result?.error) {
-        setError('Invalid credentials')
+        if (result.error === 'OAuthAccount') {
+          setError('This email is registered via Google. Please sign in with Google.')
+        } else if (result.error === 'EmailNotVerified') {
+          setError('Please verify your email before signing in. Check your inbox for the verification link.')
+        } else {
+          setError('Invalid credentials')
+        }
       } else {
         const session = await getSession()
         if (session) {
           router.push('/dashboard')
         }
       }
-    } catch (error) {
+    } catch {
       setError('Something went wrong')
     } finally {
       setIsLoading(false)
@@ -79,6 +97,11 @@ export default function SignInPage() {
 
           <div className="bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg p-8">
             <form className="space-y-6" onSubmit={handleSubmit}>
+              {info && (
+                <div className="bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-300 px-4 py-3 rounded-lg text-sm">
+                  {info}
+                </div>
+              )}
               {error && (
                 <div className="bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg text-sm">
                   {error}
@@ -102,9 +125,14 @@ export default function SignInPage() {
                 </div>
 
                 <div>
-                  <Label htmlFor="password" className="text-black dark:text-white font-medium">
-                    Password
-                  </Label>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="password" className="text-black dark:text-white font-medium">
+                      Password
+                    </Label>
+                    <Link href="/auth/forgot-password" className="text-sm text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white">
+                      Forgot password?
+                    </Link>
+                  </div>
                   <Input
                     id="password"
                     type="password"

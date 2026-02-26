@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -19,7 +18,6 @@ export default function SignUpPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
-  const router = useRouter()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({
@@ -49,16 +47,6 @@ export default function SignUpPage() {
       }
 
       setSuccess(true)
-      
-      const signInResult = await signIn('credentials', {
-        email: formData.email,
-        password: formData.password,
-        redirect: false,
-      })
-
-      if (signInResult?.ok) {
-        router.push('/dashboard')
-      }
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message)
@@ -85,11 +73,16 @@ export default function SignUpPage() {
           </div>
           <div>
             <h2 className="text-2xl font-bold text-black dark:text-white mb-2">
-              Account created!
+              Check your email
             </h2>
             <p className="text-gray-600 dark:text-gray-400">
-              Signing you in...
+              We sent a verification link to <span className="font-medium text-black dark:text-white">{formData.email}</span>. Click the link to activate your account, then sign in.
             </p>
+            <div className="mt-6">
+              <Link href="/auth/signin" className="text-sm font-medium text-black dark:text-white hover:underline">
+                Go to sign in
+              </Link>
+            </div>
           </div>
         </div>
       </div>

@@ -129,3 +129,13 @@ model Task {
 
   @@map("tasks")
 }
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  expires   DateTime
+  createdAt DateTime @default(now())
+
+  @@map("password_reset_tokens")
+}

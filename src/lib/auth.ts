@@ -45,7 +45,11 @@ export const authOptions: NextAuthOptions = {
         }
 
         if (!user.password) {
-          return null
+          throw new Error('OAuthAccount')
+        }
+
+        if (!user.emailVerified) {
+          throw new Error('EmailNotVerified')
         }
 
         const isPasswordValid = await bcrypt.compare(
@@ -92,7 +96,7 @@ export const authOptions: NextAuthOptions = {
 
           if (existingUser) {
             const googleAccount = existingUser.accounts.find(
-              acc => acc.provider === 'google'
+              (acc: typeof existingUser.accounts[number]) => acc.provider === 'google'
             )
 
             if (!googleAccount) {
