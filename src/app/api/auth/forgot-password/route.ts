@@ -27,13 +27,9 @@ export async function POST(request: NextRequest) {
       data: { token, userId: user.id, expires }
     })
 
-    sendPasswordResetEmail(email, token).catch(err => {
-      console.error('Failed to send password reset email to', email)
-      console.error('Mailgun error:', JSON.stringify(err, null, 2))
-      console.error('MAILGUN_DOMAIN:', process.env.MAILGUN_DOMAIN)
-      console.error('EMAIL_FROM:', process.env.EMAIL_FROM)
-      console.error('MAILGUN_API_KEY set:', !!process.env.MAILGUN_API_KEY)
-    })
+    sendPasswordResetEmail(email, token).catch(err =>
+      console.error('Failed to send password reset email:', err)
+    )
 
     return NextResponse.json({
       message: 'If an account with that email exists, we sent a password reset link.'

@@ -43,13 +43,9 @@ export async function POST(request: NextRequest) {
       data: { identifier: email, token, expires }
     })
 
-    sendVerificationEmail(email, token).catch(err => {
-      console.error('Failed to send verification email to', email)
-      console.error('Mailgun error:', JSON.stringify(err, null, 2))
-      console.error('MAILGUN_DOMAIN:', process.env.MAILGUN_DOMAIN)
-      console.error('EMAIL_FROM:', process.env.EMAIL_FROM)
-      console.error('MAILGUN_API_KEY set:', !!process.env.MAILGUN_API_KEY)
-    })
+    sendVerificationEmail(email, token).catch(err =>
+      console.error('Failed to send verification email:', err)
+    )
 
     const { password: _, ...userWithoutPassword } = user
 
