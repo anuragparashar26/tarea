@@ -7,6 +7,7 @@ import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { PasswordInput } from '@/components/ui/password-input'
 
 function ResetPasswordForm() {
   const [password, setPassword] = useState('')
@@ -75,9 +76,8 @@ function ResetPasswordForm() {
         <Label htmlFor="password" className="text-black dark:text-white font-medium">
           New password
         </Label>
-        <Input
+        <PasswordInput
           id="password"
-          type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
@@ -91,9 +91,8 @@ function ResetPasswordForm() {
         <Label htmlFor="confirm" className="text-black dark:text-white font-medium">
           Confirm password
         </Label>
-        <Input
+        <PasswordInput
           id="confirm"
-          type="password"
           value={confirm}
           onChange={(e) => setConfirm(e.target.value)}
           required

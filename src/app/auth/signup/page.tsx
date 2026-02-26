@@ -7,7 +7,15 @@ import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { PasswordInput } from '@/components/ui/password-input'
 import { StickyNote } from 'lucide-react'
+
+const passwordRules = [
+  { label: 'At least 8 characters', test: (p: string) => p.length >= 8 },
+  { label: 'One uppercase letter', test: (p: string) => /[A-Z]/.test(p) },
+  { label: 'One number', test: (p: string) => /[0-9]/.test(p) },
+  { label: 'One special character (!@#$%^&*-_=+,.?;:)', test: (p: string) => /[!@#$%^&*\-_=+,.?;:]/.test(p) },
+]
 
 export default function SignUpPage() {
   const [formData, setFormData] = useState({
@@ -18,6 +26,7 @@ export default function SignUpPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
+  const [passwordFocused, setPasswordFocused] = useState(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({
@@ -28,6 +37,15 @@ export default function SignUpPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (/\s/.test(formData.password)) {
+      setError('Password must not contain spaces.')
+      return
+    }
+    const passwordValid = passwordRules.every(r => r.test(formData.password))
+    if (!passwordValid) {
+      setError('Password does not meet the requirements.')
+      return
+    }
     setIsLoading(true)
     setError('')
 
@@ -164,20 +182,32 @@ export default function SignUpPage() {
                   <Label htmlFor="password" className="text-black dark:text-white font-medium">
                     Password
                   </Label>
-                  <Input
+                  <PasswordInput
                     id="password"
                     name="password"
-                    type="password"
                     value={formData.password}
                     onChange={handleChange}
+                    onFocus={() => setPasswordFocused(true)}
                     required
                     className="mt-2 border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-white focus:ring-0"
                     placeholder="Create a password"
-                    minLength={6}
+                    minLength={8}
                   />
-                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                    Must be at least 6 characters
-                  </p>
+                  {(passwordFocused || formData.password.length > 0) && (
+                    <ul className="mt-2 space-y-1">
+                      {passwordRules.map(rule => {
+                        const passed = rule.test(formData.password)
+                        return (
+                          <li key={rule.label} className={`flex items-center gap-1.5 text-xs ${
+                            passed ? 'text-green-600 dark:text-green-400' : 'text-gray-400 dark:text-gray-500'
+                          }`}>
+                            <span>{passed ? '✓' : '○'}</span>
+                            {rule.label}
+                          </li>
+                        )
+                      })}
+                    </ul>
+                  )}
                 </div>
               </div>
 
