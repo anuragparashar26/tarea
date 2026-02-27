@@ -37,8 +37,8 @@ export const updateTaskListSchema = z.object({
 export const createTaskSchema = z.object({
   title: z.string().min(1, 'Title is required').max(255, 'Title too long'),
   description: z.string().optional(),
-  dueDate: z.string().datetime().optional().nullable(),
-  reminder: z.string().datetime().optional().nullable(),
+  dueDate: z.string().optional().nullable(),
+  reminder: z.string().optional().nullable(),
   isMyDay: z.boolean().optional().default(false),
   isImportant: z.boolean().optional().default(false),
   taskListId: z.string().min(1, 'Task list is required'),
@@ -47,8 +47,8 @@ export const createTaskSchema = z.object({
 export const updateTaskSchema = z.object({
   title: z.string().min(1, 'Title is required').max(255, 'Title too long').optional(),
   description: z.string().optional(),
-  dueDate: z.string().datetime().optional().nullable(),
-  reminder: z.string().datetime().optional().nullable(),
+  dueDate: z.string().optional().nullable(),
+  reminder: z.string().optional().nullable(),
   completed: z.boolean().optional(),
   position: z.number().optional(),
   isMyDay: z.boolean().optional(),
