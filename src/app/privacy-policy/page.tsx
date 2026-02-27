@@ -177,7 +177,7 @@ export default function PrivacyPolicyPage() {
                 <div className="space-y-2 text-gray-600 dark:text-gray-400">
                   <p className="flex items-center gap-2">
                     <span className="font-medium text-black dark:text-white">Email:</span>
-                    <a href="mailto:privacy@tarea.app" className="hover:underline">anuragp5025@gmail.com</a>
+                    <a href="mailto:privacy@tarea.app" className="hover:underline">tarea@anuragparashar.tech</a>
                   </p>
                 </div>
               </section>

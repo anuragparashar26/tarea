@@ -119,6 +119,9 @@ export default function TasksManager() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [isCreateListOpen, setIsCreateListOpen] = useState(false)
   const [isCreateTaskOpen, setIsCreateTaskOpen] = useState(false)
+  const [confirmDialog, setConfirmDialog] = useState<{ open: boolean; title: string; message: string; onConfirm: () => void }>({
+    open: false, title: '', message: '', onConfirm: () => {}
+  })
   const [selectedListId, setSelectedListId] = useState<string | 'myday' | 'important' | null>('myday')
   const [editingTask, setEditingTask] = useState<Task | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
@@ -302,15 +305,27 @@ export default function TasksManager() {
   }
 
   const handleDeleteTask = (id: string) => {
-    if (window.confirm('Are you sure you want to delete this task?')) {
-      deleteTaskMutation.mutate(id)
-    }
+    setConfirmDialog({
+      open: true,
+      title: 'Delete Task',
+      message: 'Are you sure you want to delete this task? This action cannot be undone.',
+      onConfirm: () => {
+        deleteTaskMutation.mutate(id)
+        setConfirmDialog(prev => ({ ...prev, open: false }))
+      }
+    })
   }
 
   const handleDeleteTaskList = (id: string, name: string) => {
-    if (window.confirm(`Are you sure you want to delete the task list "${name}" and all its tasks? This action cannot be undone.`)) {
-      deleteTaskListMutation.mutate(id)
-    }
+    setConfirmDialog({
+      open: true,
+      title: 'Delete Task List',
+      message: `Are you sure you want to delete "${name}" and all its tasks? This action cannot be undone.`,
+      onConfirm: () => {
+        deleteTaskListMutation.mutate(id)
+        setConfirmDialog(prev => ({ ...prev, open: false }))
+      }
+    })
   }
 
   if (isLoading) {
@@ -322,7 +337,7 @@ export default function TasksManager() {
   }
 
   return (
-  <div className="flex h-screen w-full overflow-hidden bg-white dark:bg-gray-950">
+  <div className="flex h-full w-full overflow-hidden bg-white dark:bg-gray-950">
       {/* Mobile sidebar overlay */}
       {isSidebarOpen && (
         <div
@@ -332,7 +347,7 @@ export default function TasksManager() {
       )}
 
       {/* Sidebar */}
-      <div className={`fixed md:static inset-y-0 left-0 z-50 w-64 bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 transform transition-transform duration-300 ease-in-out ${
+      <div className={`fixed md:static inset-y-0 left-0 z-50 w-64 bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 transform transition-transform duration-300 ease-in-out flex flex-col ${
         isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
       }`}>
         <div className="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-800 md:hidden">
@@ -346,8 +361,8 @@ export default function TasksManager() {
           </Button>
         </div>
         
-        <div className="p-4">
-          <div className="space-y-1 mb-6">
+        <div className="p-4 flex-1 min-h-0 flex flex-col overflow-hidden">
+          <div className="space-y-1 mb-6 flex-shrink-0">
             <motion.button
               onClick={() => setSelectedListId(null)}
               variants={sidebarItemVariants}
@@ -429,8 +444,8 @@ export default function TasksManager() {
             </motion.button>
           </div>
 
-          <div className="border-t border-gray-200 dark:border-gray-800 pt-4">
-            <div className="space-y-1">
+          <div className="border-t border-gray-200 dark:border-gray-800 pt-4 flex-1 min-h-0 flex flex-col overflow-hidden">
+            <div className="space-y-1 overflow-y-auto overflow-x-hidden flex-1">
               {taskLists.map((list) => (
                 <div key={list.id} className="group relative">
                   <motion.button
@@ -461,9 +476,9 @@ export default function TasksManager() {
                     onClick={() => handleDeleteTaskList(list.id, list.name)}
                     aria-label={`Delete list ${list.name}`}
                     title="Delete list"
-                    className="absolute top-2 right-2 h-8 w-8 p-0 z-10 transition-opacity duration-200 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400"
+                    className="absolute top-2 right-2 h-9 w-9 p-0 z-10 flex items-center justify-center text-gray-400 dark:text-gray-500 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400"
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <Trash2 className="h-5 w-5" />
                   </Button>
                 </div>
               ))}
@@ -471,7 +486,7 @@ export default function TasksManager() {
           </div>
         </div>
 
-        <div className="absolute bottom-4 left-4 right-4">
+        <div className="p-4 border-t border-gray-200 dark:border-gray-800 flex-shrink-0">
           <motion.div
             variants={buttonVariants}
             whileHover="hover"
@@ -490,7 +505,7 @@ export default function TasksManager() {
       </div>
 
   {/* Main Content */}
-  <div className="flex-1 flex flex-col min-h-0 relative">
+  <div className="flex-1 flex flex-col min-h-0 relative overflow-hidden">
         {/* Header */}
         <div className="sticky top-0 z-20 bg-white/80 dark:bg-gray-950/80 backdrop-blur supports-[backdrop-filter]:backdrop-blur border-b border-gray-200 dark:border-gray-800 p-4">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -554,7 +569,7 @@ export default function TasksManager() {
         </div>
 
   {/* Task Content */}
-  <div className="flex-1 p-6 pb-24 overflow-y-auto">
+  <div className="flex-1 overflow-y-auto flex flex-col">
           {/* Task Display */}
           {(() => {
             // Filter tasks based on selected list
@@ -592,75 +607,78 @@ export default function TasksManager() {
               }
             }
 
+            if (filteredTasks.length === 0) {
+              return (
+                <motion.div
+                  variants={listItemVariants}
+                  initial="hidden"
+                  animate="visible"
+                  className="flex-1 flex flex-col items-center justify-center text-center"
+                >
+                  {selectedListId === null && (
+                    <>
+                      <div className="w-16 h-16 mb-4 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
+                        <List className="w-8 h-8 text-gray-400" />
+                      </div>
+                      <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No tasks yet</h3>
+                      <p className="text-gray-500 dark:text-gray-400 text-sm">
+                        Create your first task list to get started.
+                      </p>
+                    </>
+                  )}
+                  {selectedListId === 'myday' && (
+                    <>
+                      <div className="w-20 h-20 mb-5 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
+                        <Sun className="w-10 h-10 text-gray-400" />
+                      </div>
+                      <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">Your day is clear</h3>
+                      <p className="text-gray-500 dark:text-gray-400 text-sm">
+                        No tasks scheduled for today.
+                      </p>
+                    </>
+                  )}
+                  {selectedListId === 'important' && (
+                    <>
+                      <div className="w-16 h-16 mb-4 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
+                        <Star className="w-8 h-8 text-gray-400" />
+                      </div>
+                      <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No important tasks</h3>
+                      <p className="text-gray-500 dark:text-gray-400 text-sm">
+                        Mark tasks as important to see them here.
+                      </p>
+                    </>
+                  )}
+                  {typeof selectedListId === 'string' && taskLists.find(l => l.id === selectedListId) && (
+                    <>
+                      <div className="w-16 h-16 mb-4 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
+                        <CheckSquare className="w-8 h-8 text-gray-400" />
+                      </div>
+                      <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">List is empty</h3>
+                      <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">
+                        Add your first task to &quot;{taskLists.find(l => l.id === selectedListId)?.name}&quot;.
+                      </p>
+                      <Button
+                        onClick={() => setIsCreateTaskOpen(true)}
+                        variant="outline"
+                        className="border-gray-300 dark:border-gray-700"
+                      >
+                        <Plus className="h-4 w-4 mr-2" />
+                        Create Task
+                      </Button>
+                    </>
+                  )}
+                </motion.div>
+              )
+            }
+
             return (
               <motion.div
                 variants={containerVariants}
                 initial="hidden"
                 animate="visible"
-                className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"
+                className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 p-6 pb-24"
               >
-                {filteredTasks.length === 0 ? (
-                  <motion.div
-                    variants={listItemVariants}
-                    className="flex flex-col items-center justify-center py-12 px-4 min-h-[50vh]"
-                  >
-                    <div className="text-center max-w-md mx-auto">
-                      {selectedListId === null && (
-                        <>
-                          <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
-                            <List className="w-8 h-8 text-gray-400" />
-                          </div>
-                          <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No tasks yet</h3>
-                          <p className="text-gray-500 dark:text-gray-400 text-sm">
-                            Create your first task list to get started.
-                          </p>
-                        </>
-                      )}
-                      {selectedListId === 'myday' && (
-                        <>
-                          <div className="w-20 h-20 mx-auto mb-5 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
-                            <Sun className="w-8 h-8 text-gray-400" />
-                          </div>
-                          <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">Your day is clear</h3>
-                          <p className="text-gray-500 dark:text-gray-400 text-sm">
-                            No tasks scheduled for today.
-                          </p>
-                        </>
-                      )}
-                      {selectedListId === 'important' && (
-                        <>
-                          <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
-                            <Star className="w-8 h-8 text-gray-400" />
-                          </div>
-                          <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No important tasks</h3>
-                          <p className="text-gray-500 dark:text-gray-400 text-sm">
-                            Mark tasks as important to see them here.
-                          </p>
-                        </>
-                      )}
-                      {typeof selectedListId === 'string' && taskLists.find(l => l.id === selectedListId) && (
-                        <>
-                          <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
-                            <CheckSquare className="w-8 h-8 text-gray-400" />
-                          </div>
-                          <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">List is empty</h3>
-                          <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">
-                            Add your first task to &quot;{taskLists.find(l => l.id === selectedListId)?.name}&quot;.
-                          </p>
-                          <Button
-                            onClick={() => setIsCreateTaskOpen(true)}
-                            variant="outline"
-                            className="border-gray-300 dark:border-gray-700"
-                          >
-                            <Plus className="h-4 w-4 mr-2" />
-                            Create Task
-                          </Button>
-                        </>
-                      )}
-                    </div>
-                  </motion.div>
-                ) : (
-                  filteredTasks.map((task) => (
+                  {filteredTasks.map((task) => (
                   <div
                     key={task.id}
                     className={`group bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-4 hover:shadow-md transition-all duration-200 relative ${
@@ -748,11 +766,31 @@ export default function TasksManager() {
                       </div>
                     </div>
                   </div>
-                ))
-                )}
+                  ))}
               </motion.div>
             )
           })()}
+
+          {/* Confirm Dialog */}
+          <Dialog open={confirmDialog.open} onOpenChange={(open) => setConfirmDialog(prev => ({ ...prev, open }))}>
+            <DialogContent className="sm:max-w-[380px]">
+              <DialogHeader>
+                <DialogTitle>{confirmDialog.title}</DialogTitle>
+              </DialogHeader>
+              <p className="text-sm text-gray-600 dark:text-gray-400">{confirmDialog.message}</p>
+              <div className="flex justify-end gap-2 mt-2">
+                <Button variant="outline" onClick={() => setConfirmDialog(prev => ({ ...prev, open: false }))}>
+                  Cancel
+                </Button>
+                <Button
+                  className="bg-red-600 hover:bg-red-700 text-white"
+                  onClick={confirmDialog.onConfirm}
+                >
+                  Delete
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
 
           {/* Create Task List Dialog */}
           <Dialog open={isCreateListOpen} onOpenChange={setIsCreateListOpen}>
@@ -769,18 +807,6 @@ export default function TasksManager() {
                     value={newTaskList.name}
                     onChange={(e) => setNewTaskList({ ...newTaskList, name: e.target.value })}
                     placeholder="Enter list name..."
-                    className="mt-1"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Description
-                  </label>
-                  <Textarea
-                    value={newTaskList.description}
-                    onChange={(e) => setNewTaskList({ ...newTaskList, description: e.target.value })}
-                    placeholder="Enter description..."
-                    rows={3}
                     className="mt-1"
                   />
                 </div>

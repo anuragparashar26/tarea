@@ -378,9 +378,9 @@ export default function HomePage() {
         transition={{ duration: 0.6, delay: 0.2 }}
         viewport={{ once: true }}
       >
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
           <motion.div
-            className="flex items-center space-x-3 mb-4 md:mb-0"
+            className="flex items-center space-x-3"
             whileHover={{ scale: 1.05 }}
             transition={{ type: "spring", stiffness: 400, damping: 10 }}
           >
@@ -393,16 +393,16 @@ export default function HomePage() {
             />
             <span className="font-medium">Tarea</span>
           </motion.div>
-          <div className="flex items-center gap-4 text-sm">
+          <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-sm text-center">
             <Link
               href="/privacy-policy"
               className="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors"
             >
               Privacy Policy
             </Link>
-            <span className="text-gray-300 dark:text-gray-700">•</span>
+            <span className="hidden sm:inline text-gray-300 dark:text-gray-700">•</span>
             <p className="text-gray-500 dark:text-gray-400">
-              © 2025 Tarea. Built by Anurag Parashar.
+              © 2026 Tarea. Built by Anurag Parashar.
             </p>
           </div>
         </div>

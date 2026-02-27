@@ -8,7 +8,7 @@ import { Tabs, TabsContent } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
-import { StickyNote, CheckSquare, LogOut, User } from 'lucide-react'
+import { LogOut, User, StickyNote, CheckSquare } from 'lucide-react'
 import NotesManager from '@/components/notes/NotesManager'
 import TasksManager from '@/components/tasks/TasksManager'
 
@@ -29,7 +29,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-black flex flex-col">
+    <div className="h-screen bg-white dark:bg-black flex flex-col overflow-hidden">
       {/* Header */}
       <motion.header 
         className="border-b border-gray-200 dark:border-gray-800"
@@ -37,9 +37,9 @@ export default function DashboardPage() {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
       >
-  <div className="w-full px-6 py-4">
+  <div className="w-full px-4 py-3 md:px-6 md:py-4">
           <div className="flex justify-between items-center">
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2 md:space-x-3">
               <motion.div 
                 className="w-8 h-8 rounded-sm flex items-center justify-center"
                 whileHover={{ scale: 1.05 }}
@@ -54,7 +54,7 @@ export default function DashboardPage() {
                 />
               </motion.div>
               <motion.h1 
-                className="text-xl font-semibold tracking-tight"
+                className="text-lg md:text-xl font-semibold tracking-tight"
                 initial={{ x: -10, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ delay: 0.2, duration: 0.5 }}
@@ -63,7 +63,37 @@ export default function DashboardPage() {
               </motion.h1>
             </div>
 
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 md:space-x-4">
+              {/* Tab switcher */}
+              <motion.div
+                className="flex items-center rounded-lg border border-gray-200 dark:border-gray-800 overflow-hidden"
+                initial={{ x: 10, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+              >
+                <button
+                  onClick={() => setActiveTab('notes')}
+                  className={`flex items-center gap-1.5 px-2.5 py-1.5 md:px-3 text-sm transition-colors ${
+                    activeTab === 'notes'
+                      ? 'bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900'
+                      : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900'
+                  }`}
+                >
+                  <StickyNote className="h-4 w-4 flex-shrink-0" />
+                  <span className="hidden sm:inline">Notes</span>
+                </button>
+                <button
+                  onClick={() => setActiveTab('tasks')}
+                  className={`flex items-center gap-1.5 px-2.5 py-1.5 md:px-3 text-sm transition-colors ${
+                    activeTab === 'tasks'
+                      ? 'bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900'
+                      : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900'
+                  }`}
+                >
+                  <CheckSquare className="h-4 w-4 flex-shrink-0" />
+                  <span className="hidden sm:inline">Tasks</span>
+                </button>
+              </motion.div>
               <motion.div
                 initial={{ x: 10, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
@@ -73,11 +103,11 @@ export default function DashboardPage() {
                   variant="ghost"
                   size="sm"
                   asChild
-                  className="hover:bg-gray-100 dark:hover:bg-gray-900"
+                  className="hover:bg-gray-100 dark:hover:bg-gray-900 px-2 md:px-3"
                 >
                   <Link href="/profile" className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
-                    <User className="h-4 w-4" />
-                    <span>{session.user?.name || session.user?.email}</span>
+                    <User className="h-4 w-4 flex-shrink-0" />
+                    <span className="hidden md:inline">{session.user?.name || session.user?.email}</span>
                   </Link>
                 </Button>
               </motion.div>
@@ -90,10 +120,10 @@ export default function DashboardPage() {
                   variant="ghost"
                   size="sm"
                   onClick={() => signOut({ callbackUrl: '/' })}
-                  className="hover:bg-gray-100 dark:hover:bg-gray-900"
+                  className="hover:bg-gray-100 dark:hover:bg-gray-900 px-2 md:px-3"
                 >
-                  <LogOut className="h-4 w-4 mr-2" />
-                  Sign Out
+                  <LogOut className="h-4 w-4 flex-shrink-0" />
+                  <span className="hidden sm:inline ml-2">Sign Out</span>
                 </Button>
               </motion.div>
             </div>
@@ -102,41 +132,14 @@ export default function DashboardPage() {
       </motion.header>
 
       {/* Main Content */}
-  <main className="w-full px-6 py-8 flex-1 min-h-0 relative overflow-hidden">
+      <main className={`w-full flex-1 min-h-0 flex flex-col overflow-hidden ${activeTab === 'tasks' ? '' : 'px-6 py-8'}`}>
         <motion.div
+          className="flex-1 min-h-0 flex flex-col"
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.6, duration: 0.5 }}
         >
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full">
-
-            {/* Floating switcher buttons */}
-            <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3">
-              <button
-                aria-label="Show Notes"
-                onClick={() => setActiveTab('notes')}
-                className={`h-12 w-12 rounded-full shadow-md flex items-center justify-center transition-colors border ${
-                  activeTab === 'notes'
-                    ? 'bg-black text-white border-black dark:bg-white dark:text-black dark:border-white'
-                    : 'bg-white text-black border-gray-300 hover:bg-gray-100 dark:bg-gray-900 dark:text-white dark:border-gray-700 dark:hover:bg-gray-800'
-                }`}
-                title="Notes"
-              >
-                <StickyNote className="h-5 w-5" />
-              </button>
-              <button
-                aria-label="Show Tasks"
-                onClick={() => setActiveTab('tasks')}
-                className={`h-12 w-12 rounded-full shadow-md flex items-center justify-center transition-colors border ${
-                  activeTab === 'tasks'
-                    ? 'bg-black text-white border-black dark:bg-white dark:text-black dark:border-white'
-                    : 'bg-white text-black border-gray-300 hover:bg-gray-100 dark:bg-gray-900 dark:text-white dark:border-gray-700 dark:hover:bg-gray-800'
-                }`}
-                title="Tasks"
-              >
-                <CheckSquare className="h-5 w-5" />
-              </button>
-            </div>
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 min-h-0 flex flex-col">
 
             <AnimatePresence mode="wait">
               <TabsContent value="notes" key="notes">
@@ -152,8 +155,9 @@ export default function DashboardPage() {
                 </motion.div>
               </TabsContent>
 
-              <TabsContent value="tasks" key="tasks" className="h-full">
+              <TabsContent value="tasks" key="tasks" className="flex-1 min-h-0 mt-0">
                 <motion.div
+                  className="h-full"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 20 }}

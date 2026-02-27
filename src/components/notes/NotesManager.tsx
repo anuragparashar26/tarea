@@ -68,6 +68,9 @@ export default function NotesManager() {
   const [isSaving, setIsSaving] = useState(false)
   const [newNote, setNewNote] = useState({ title: '', content: '' })
   const [showNewNote, setShowNewNote] = useState(false)
+  const [confirmDialog, setConfirmDialog] = useState<{ open: boolean; noteId: string }>({
+    open: false, noteId: ''
+  })
   const queryClient = useQueryClient()
   const titleInputRef = useRef<HTMLInputElement>(null)
 
@@ -205,9 +208,7 @@ export default function NotesManager() {
 
   const handleDeleteNote = (id: string, e: React.MouseEvent) => {
     e.stopPropagation()
-    if (window.confirm('Are you sure you want to delete this note?')) {
-      deleteNoteMutation.mutate(id)
-    }
+    setConfirmDialog({ open: true, noteId: id })
   }
 
   const handleCloseModal = () => {
@@ -359,6 +360,30 @@ export default function NotesManager() {
           ))}
         </motion.div>
       )}
+
+      {/* Confirm Delete Dialog */}
+      <Dialog open={confirmDialog.open} onOpenChange={(open) => setConfirmDialog(prev => ({ ...prev, open }))}>
+        <DialogContent className="sm:max-w-[380px]">
+          <DialogHeader>
+            <DialogTitle>Delete Note</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-gray-600 dark:text-gray-400">Are you sure you want to delete this note? This action cannot be undone.</p>
+          <div className="flex justify-end gap-2 mt-2">
+            <Button variant="outline" onClick={() => setConfirmDialog(prev => ({ ...prev, open: false }))}>
+              Cancel
+            </Button>
+            <Button
+              className="bg-red-600 hover:bg-red-700 text-white"
+              onClick={() => {
+                deleteNoteMutation.mutate(confirmDialog.noteId)
+                setConfirmDialog(prev => ({ ...prev, open: false }))
+              }}
+            >
+              Delete
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Edit Note Modal */}
       <Dialog open={!!editingNote} onOpenChange={(open) => !open && handleCloseModal()}>
